@@ -18,7 +18,10 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "width": 800,
   "height": 450,
-  "title": "Gross State Product Annual Growth in Australia (2022 - 2023)",
+  "title": {
+            "text": "Gross State Product Annual Growth in Australia (2022 - 2023)",
+            "fontSize": 24  // Increase the font size of the title
+        },
   "projection": {
     "type": "equalEarth"
   },
@@ -46,21 +49,56 @@
 "fields": ["Gross State Product(%)"]
 }
 }
-],"mark": {"type": "geoshape"},
-"encoding": {
-"color": {
-"field": "Gross State Product(%)",
-"type": "quantitative",
-"scale": {
-        "scheme": "blues"  // This applies a single blue color with varying brightness
+],
+  "layer": [
+    {
+      "mark": {
+        "type": "geoshape"
+      },
+      "encoding": {
+        "color": {
+          "field": "Gross State Product(%)",
+          "type": "quantitative",
+          
+        },
+        "tooltip": [
+          {
+            "field": "properties.STATE_NAME",
+            "type": "nominal",
+            "title": "Country"
+          },
+          {
+            "field": "Gross State Product(%)",
+            "type": "quantitative"
+          }
+        ]
       }
-},
-"tooltip": [
-{"field": "properties.STATE_NAME", "type": "nominal", "title":
-"Country"},
-{"field": "Gross State Product(%)", "type": "quantitative"}
-]
-}
+    },
+    {
+      "data": {
+        "values": [
+          {"state": "New South Wales", "lat": -30.8688, "lon": 147.2093},
+          {"state": "Victoria", "lat": -35.8136, "lon": 144.9631},
+          {"state": "Queensland", "lat": -23.4698, "lon": 143.0251},
+          {"state": "South Australia", "lat": -27.9285, "lon": 134.6007},
+          {"state": "Western Australia", "lat": -25.9505, "lon": 120.8605},
+          {"state": "Tasmania", "lat": -42.8821, "lon": 147.3272},
+          {"state": "Northern Territory", "lat": -18.4634, "lon": 133.8456}
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "fontSize": 17,
+        "color": "black",
+        "dy": 10
+      },
+      "encoding": {
+        "longitude": {"field": "lon", "type": "quantitative"},
+        "latitude": {"field": "lat", "type": "quantitative"},
+        "text": {"field": "state"}
+      }
+    }
+  ]
 }
 ;
         vegaEmbed('#vis', spec).then(result => {
