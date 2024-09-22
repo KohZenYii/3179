@@ -7,6 +7,8 @@
     <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.17.0"></script>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS -->
+
 </head>
 <body>
     <div id="vis"></div>
@@ -22,7 +24,7 @@
   },
 
       "data": {
-        "url": "https://raw.githubusercontent.com/KohZenYii/3179/refs/heads/main/states.topojson",
+        "url": "https://raw.githubusercontent.com/KohZenYii/3179/refs/heads/main/js/states.topojson",
         "format": {
           "type": "topojson",
           "feature": "states"
@@ -38,7 +40,7 @@
 "lookup": "properties.STATE_NAME",
 "from": {
 "data": {
-"url": "https://raw.githubusercontent.com/KohZenYii/3179/refs/heads/main/Gross%20State%20Product%20annual%20growth%2C%202022-23.csv"
+"url": "https://raw.githubusercontent.com/KohZenYii/3179/refs/heads/main/data/Gross%20State%20Product%20annual%20growth%2C%202022-23.csv"
 },
 "key": "Region",
 "fields": ["Gross State Product(%)"]
@@ -57,13 +59,8 @@
 ]
 }
 }
-
-    
-    
 ;
-
         vegaEmbed('#vis', spec).then(result => {
-            // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
         }).catch(console.error);
     </script>
 </body>
