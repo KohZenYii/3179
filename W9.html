@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.17.0"></script>
+</head>
+<body>
+    <div id="vis"></div>
+
+    <script type="text/javascript">
+        const spec = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 800,
+  "height": 450,
+  "title": "Gross State Product Annual Growth in Australia (2022 - 2023)",
+  "projection": {
+    "type": "equalEarth"
+  },
+
+      "data": {
+        "url": "https://raw.githubusercontent.com/KohZenYii/3179/refs/heads/main/states.topojson",
+        "format": {
+          "type": "topojson",
+          "feature": "states"
+        }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "lightgray",
+        "stroke": "white"
+      },
+"transform": [
+{
+"lookup": "properties.STATE_NAME",
+"from": {
+"data": {
+"url": "https://raw.githubusercontent.com/KohZenYii/3179/refs/heads/main/Gross%20State%20Product%20annual%20growth%2C%202022-23.csv"
+},
+"key": "Region",
+"fields": ["Gross State Product(%)"]
+}
+}
+],"mark": {"type": "geoshape"},
+"encoding": {
+"color": {
+"field": "Gross State Product(%)",
+"type": "quantitative"
+},
+"tooltip": [
+{"field": "properties.STATE_NAME", "type": "nominal", "title":
+"Country"},
+{"field": "Gross State Product(%)", "type": "quantitative"}
+]
+}
+}
+
+    
+    
+;
+
+        vegaEmbed('#vis', spec).then(result => {
+            // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+        }).catch(console.error);
+    </script>
+</body>
+</html>
