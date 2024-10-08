@@ -4,123 +4,215 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Visualisation Homework</title>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.18.2"></script>
   <style>
-/* styles.css */
-/* Base body style */
-body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    margin: 0;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color:white; /* Change the background color to white */
-    color: white;
-    line-height: 1.6;
-}
-  
-h1 {
-    text-align: center;
-    font-size: 2.5em;
-    margin-bottom: 30px;
-    color: #1a1a1a;
-    border-bottom: 3px solid #2c3e50;
-    padding-bottom: 10px;
-}
-  
-h2 {
-    font-size: 1.8em;
-    color: #2c3e50;
-    margin-top: 40px;
-    margin-bottom: 20px;
-}
-  
-iframe {
-    width: 100%;
-    max-width: 1200px; /* Set iframe width to match the description box */
-    height: 800px;
-    border: none;
-    margin-bottom: 30px;
-    border-radius: 8px;
-    background-color:white;
-}
-  
-.section-header {
-    width: 100%;
-    max-width: 950px; /* Set description box width to match iframe */
-    margin-top: 30px;
-}
-  
-.description {
-    background-color: #97d7e9e5;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 20px;
-    width: 100%;
-    max-width: 1200px; /* Set description box width to match iframe */
-}
-  
-.description p {
-    margin: 0;
-    font-size: 1.1em;
-    color: #444;
-    line-height: 1.8;
-}
-  
-
-
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .visualization-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+    }
+    .chart {
+      margin: 20px 0;
+    }
   </style>
 </head>
 <body>
 
-  <h1>Data Visualisation Homework</h1>
+  <h1>W10 Homework</h1>
 
-  <!-- Embed Chart 1 (GDP by Australian States) -->
-  <!-- <h2>GDP by Australian States</h2> -->
-  <iframe src="chart1.html" title="GDP by Australian States"></iframe>
+  <div class="visualization-container">
+    <!-- Task 1: Inverted Bar Chart with Legend Selection -->
+    <h2>Exports by State (2017-2019)</h2>
+    <div id="bar_chart" class="chart"></div>
 
-  <!-- Description Section -->
-  <div class="section-header">
-    <h2>Western Australia and Queensland: Resource-Driven Powerhouses</h2>
-  </div>
-  <div class="description">
-    <p>The GDP data reveals that Western Australia and Queensland are among the top economic performers, with GDPs of 445,348 million and 503,351 million respectively. This economic strength appears closely tied to their robust export performance, as shown in the 2017-2019 export data where Western Australia significantly outperforms other states. These regions' economies are primarily driven by their rich natural resources, with mining and energy exports playing a crucial role in their economic success.</p>
+    <!-- Task 2: Map Visualization from Week 9 -->
+    <h2>Map Visualization</h2>
+    <div id="map_visual" class="chart"></div>
   </div>
 
+  <script type="text/javascript">
+    // Task 1: Inverted Bar Chart
+    var barChartSpec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "data": {
+        "url": "https://raw.githubusercontent.com/KohZenYii/3179/refs/heads/main/data/States%20Exports.csv"
+      },
+      "width": 700,
+      "height": 450,
+      "title": {
+        "text": "Australia's Exports of Goods and Services by State",
+        "fontSize": 24
+      },
+      "transform": [
+        {
+          "fold": ["2017", "2018", "2019"],
+          "as": ["Year", "Exports"]
+        },
+        {
+          "calculate": "toNumber(replace(datum.Exports, ',', ''))",
+          "as": "Exports_clean"
+        }
+      ],
+      "selection": {
+        "year_highlight": {
+          "type": "multi",
+          "fields": ["Year"],
+          "bind": "legend"
+        }
+      },
+      "mark": "bar",
+      "encoding": {
+        "y": {
+          "field": "State",
+          "type": "nominal",
+          "title": "State"
+        },
+        "x": {
+          "field": "Exports_clean",
+          "type": "quantitative",
+          "title": "Exports (in million AUD)"
+        },
+        "color": {
+          "field": "Year",
+          "type": "nominal",
+          "title": "Year",
+          "scale": {
+            "scheme": "category10"
+          }
+        },
+        "opacity": {
+          "condition": {
+            "selection": "year_highlight",
+            "value": 1
+          },
+          "value": 0.2
+        },
+        "tooltip": [
+          {"field": "State", "type": "nominal", "title": "State"},
+          {"field": "Year", "type": "nominal", "title": "Year"},
+          {"field": "Exports_clean", "type": "quantitative", "title": "Exports (in million AUD)"}
+        ]
+      }
+    };
 
-  <!-- Embed Chart 2 (Exports by State) -->
-  <!-- <h2>Exports by State (2017-2019)</h2> -->
-  <iframe src="chart2.html" title="Exports by State (2017-2019)"></iframe>
+    vegaEmbed('#bar_chart', barChartSpec).then(function(result) {
+      console.log("Bar chart loaded");
+    }).catch(console.error);
 
-  <div class="section-header">
-    <h2>Victoria and New South Wales: Education and Service Sectors</h2>
-  </div>
-  <div class="description">
-    <p>Despite having a lower GDP than Western Australia, Victoria shows substantial educational export income, as evidenced in the 2020-2023 educational export data. New South Wales also demonstrates strong performance in educational exports, suggesting that these states have successfully diversified their economies beyond traditional industries.</p>
-  </div>
+    // Task 2: Map Visualization from Week 9
+    var mapSpec = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 800,
+  "height": 450,
+  "title": {
+    "text": "Gross State Product Annual Growth in Australia (2022 - 2023)",
+    "fontSize": 24
+  },
+  "projection": {
+    "type": "equalEarth"
+  },
+  "data": {
+    "url": "https://raw.githubusercontent.com/KohZenYii/3179/refs/heads/main/js/states.topojson",
+    "format": {
+      "type": "topojson",
+      "feature": "states"
+    }
+  },
+  "transform": [
+    {
+      "lookup": "properties.STATE_NAME",
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/KohZenYii/3179/refs/heads/main/data/Gross%20State%20Product%20annual%20growth%2C%202022-23.csv"
+        },
+        "key": "Region",
+        "fields": ["Gross State Product(%)"]
+      }
+    }
+  ],
+  "layer": [
+    {
+      "mark": {
+        "type": "geoshape"
+      },
+      "encoding": {
+        "color": {
+          "field": "Gross State Product(%)",
+          "type": "quantitative",
+          "scale": {
+            "scheme": "blues"
+          },
+          "title": "GSP (%)"
+        },
+        "tooltip": [
+          {
+            "field": "properties.STATE_NAME",
+            "type": "nominal",
+            "title": "State"
+          },
+          {
+            "field": "Gross State Product(%)",
+            "type": "quantitative",
+            "title": "GSP (%)"
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {"state": "New South Wales", "lat": -30.8688, "lon": 147.2093, "gsp": "3.2%"},
+          {"state": "Victoria", "lat": -35.8136, "lon": 144.9631, "gsp": "2.8%"},
+          {"state": "Queensland", "lat": -23.4698, "lon": 143.0251, "gsp": "4.1%"},
+          {"state": "South Australia", "lat": -27.9285, "lon": 134.6007, "gsp": "2.5%"},
+          {"state": "Western Australia", "lat": -25.9505, "lon": 120.8605, "gsp": "4.5%"},
+          {"state": "Tasmania", "lat": -42.8821, "lon": 147.3272, "gsp": "3.0%"},
+          {"state": "Northern Territory", "lat": -18.4634, "lon": 133.8456, "gsp": "5.3%"}
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "fontSize": 14,
+        "color": "black",
+        "align": "center",
+        "baseline": "middle",
+        "lineBreak": "\n"
+      },
+      "encoding": {
+        "longitude": {"field": "lon", "type": "quantitative"},
+        "latitude": {"field": "lat", "type": "quantitative"},
+        "text": {"field": "label", "type": "nominal"}
+      },
+      "transform": [
+        {
+          "calculate": "datum.state + '\\n' + datum.gsp",
+          "as": "label"
+        }
+      ]
+    }
+  ]
+};
 
+    vegaEmbed('#map_visual', mapSpec).then(function(result) {
+      console.log("Map visualization loaded");
+    }).catch(console.error);
+  </script>
 
-  <!-- Embed Chart 3 (Educational Export Income by State) -->
-  <!-- <h2>Educational Export Income by State (2020-2023)</h2> -->
-  <iframe src="chart3.html" title="FUCK"></iframe>
-
-  <div class="section-header">
-    <h2>Tourism's Impact on State Economies</h2>
-  </div>
-  <div class="description">
-    <p>The 2024 tourism data reveals interesting patterns, with New South Wales receiving the highest number of visitors (234,450), followed by Queensland (171,360) and Victoria (161,390). This tourism strength provides an additional economic pillar for these states, contributing to their overall economic resilience and diversification. The tourism sector appears to complement other economic activities, particularly in states that may not have the same level of resource exports as Western Australia.</p>
-  </div>
-
-  <!-- Embed Chart 4 (Tourism Data for 2024) -->
-  <!-- <h2>Tourism Data for 2024 by State</h2> -->
-  <iframe src="chart4.html" title="Tourism Data for 2024"></iframe>
-  <div class="section-header">
-    <h2>The Challenge of Smaller States</h2>
-  </div>
-  <div class="description">
-    <p>The data highlights the economic challenges faced by smaller states and territories. Tasmania, the Northern Territory, and the Australian Capital Territory consistently show lower numbers across all metrics - GDP, exports, educational income, and tourism. This suggests that these regions may need targeted strategies to boost their economic performance, perhaps by identifying and developing niche sectors that can compete effectively with their larger counterparts.</p>
-  </div>
-  
 </body>
 </html>
